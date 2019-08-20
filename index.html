@@ -1,18 +1,81 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Hello World!</title>
-    <link rel="stylesheet" href="./contents/bootstrap/4.1.3/css/bootstrap.min.css" />
-
-    <script>let $ = require('jquery');</script>
-  <script>require('popper.js');</script>
-<script>require('bootstrap');</script>
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <script>
+      let $ = require("jquery");
+    </script>
+    <script>
+      require("popper.js");
+    </script>
+    <script>
+      require("bootstrap");
+    </script>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <nav
+      class="navbar navbar-expand-md navbar-light fixed-top mb-5"
+      id="main-nav"
+    >
+      <div class="container">
+        <a href="#home" class="navbar-brand">
+          <img src="img/gd.jpeg" width="50" height="50" alt="" />
+          <h2 class="d-inline align-middle">Gradient Descent Demo</h2>
+        </a>
+        <button
+          class="navbar-toggler"
+          data-toggle="collapse"
+          data-target="#navbarCollapse"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav ml-auto p-5">
+            <li class="nav-item mr-2">
+              <button class="btn btn-primary" id="newData"><a href="#home" class="nav-link">Get New Data</a></button>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-primary" id="GD"><a href="#about" class="nav-link">Run Gradient Descent</a></button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+<br><br><br>
+    <!-- SHOWCASE -->
+    <section id="showcase" class="p-5 bg-light m-auto">
+      <div class="primary-overlay text-white">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <h1 class="text-dark">
+                Original Data
+              </h1>
+              <div id="original" class="bg-dark" >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="node_modules/d3/dist/d3.min.js"></script>
+    <script src="view/plot.js"></script>
+    <script>
+      const { ipcRenderer } = require("electron");
+      console.log(d3);
+      $("#newData").click(function (e) { 
+        e.preventDefault();
+        ipcRenderer.send("get-data", {});
+      });
+      ipcRenderer.on("asynchronous-reply", (event, data) => {
+        console.log(data);
+        plotData(data);
+      });
+    </script>
   </body>
 </html>
