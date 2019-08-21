@@ -1,1 +1,2 @@
-const mainDesktopApp = require('main');
+const MainDesktopApp = require('main');
+let mainDesktopApp = new MainDesktopApp();

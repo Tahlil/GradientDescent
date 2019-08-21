@@ -76,6 +76,20 @@
         console.log(data);
         plotData(data);
       });
+
+      $("#GD").click(function (e) { 
+        e.preventDefault();
+        ipcRenderer.send("run-GD-algo", {});
+      });
+      ipcRenderer.on("end-GD-algo", (event, res) => {
+        console.log(res);
+        if(res.success){
+
+        }
+        else{
+
+        }
+      });
     </script>
   </body>
 </html>
