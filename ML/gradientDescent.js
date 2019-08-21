@@ -79,18 +79,20 @@ const GradientDescent = function(){
 
     for (let index = 0; index < numberOfObservation; index++) {
       let noise;
-      if (_getRandomInARange(0, 100) > 10) {
-        noise = _getRandomInARange(-50, 50);
+      if (_getRandomInARange(0, 100) > 19) {
+        noise = _getRandomInARange((-1)*upperRange, upperRange);
       } else {
-        noise = _getRandomInARange(-500, 500); // outlier
+         // outlier
+        if (_getRandomInARange(0, 100) > 50) noise = _getRandomInARange(_getRandomInARange(-3000, -1500), (-1)*upperRange);
+        else noise = _getRandomInARange(upperRange, _getRandomInARange(1500, 3500));
+        
       }
-      let x = _getRandomInARange(20, upperRange);
-      let y = yInterceptConstant + x * slope + noise;
+      let x = _getRandomInARange(100, upperRange)*2;
+      let y = yInterceptConstant + x * slope + noise + upperRange;
       data.push({
         [x]: y
       });
     }
-    _startingConstantAndSlopeApproaches["roughEstimateApproach"](data);
     return {
       data: data,
       beta0: yInterceptConstant,

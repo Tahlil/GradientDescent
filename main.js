@@ -5,14 +5,12 @@ const gradientDescent = require('./ML/gradientDescent');
 let win;
 
 class DesktopApp {
-  currentData;
-
   constructor() {
     this.app = app;
     this.ipcMain = ipcMain;
     this.setUpApp();
+    this.setUpGDListener();
     this.currentData = null;
-    
   }
   
   createWindow () {
@@ -58,7 +56,7 @@ class DesktopApp {
 
     setUpDataListener(){
       this.ipcMain.on('get-data', (event, arg) => {
-        let allInfos = gradientDescent.createAndGetDummyData(10, 1000);
+        let allInfos = gradientDescent.createAndGetDummyData(1000, 1000);
         let data = allInfos.data;
         this.currentData = data;
         data = data.map((point)=> {

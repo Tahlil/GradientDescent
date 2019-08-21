@@ -46,7 +46,16 @@
         </div>
       </div>
     </nav>
-<br><br><br>
+    
+<br><br><br><br><br><br>
+<div class="row pt-5">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="usr">Choose number of data to be generated:</label>
+            <input value="100" type="number" min="100" max="10000" step="100"></input>
+        </div>
+    </div>
+  </div>
     <!-- SHOWCASE -->
     <section id="showcase" class="p-5 bg-light m-auto">
       <div class="primary-overlay text-white">
@@ -62,6 +71,42 @@
           </div>
         </div>
       </div>
+    </section>
+    
+    <section id="tuning" class="pl-5">
+      <div class="row">
+          <h2>Options</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+            <h5 >Choose starting beta predictor method</h5>
+            <div class="form-check">
+                <label class="form-check-label">
+                  <input type="radio" class="form-check-input" checked name="optradio">Random Method
+                </label>
+              </div>
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input type="radio" class="form-check-input" name="optradio">Rough estimation method
+                </label>
+              </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Learning rate</h4>
+            <div class="form-group">
+                <label for="usr">Choose Learning rate:</label>
+                <input value="0.2" type="number" min="0.01" max="10" step="0.01"></input>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h4>Number of Iteration</h4>
+            <div class="form-group">
+                <label for="usr">Choose Number of Interation:</label>
+                <input value="100" type="number" min="10" max="100000" step="10"></input>
+            </div>
+        </div>
+      </div>
+      
     </section>
     <script src="node_modules/d3/dist/d3.min.js"></script>
     <script src="view/plot.js"></script>
