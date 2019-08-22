@@ -13,9 +13,17 @@ const GradientDescent = function(){
     XYpairs.map(point => Object.values(point)[0])
   }
 
-  let _startingConstantAndSlopeApproaches = {
+  function _predict(XMatrix, betaVector) {
+    let predictedYVector = nj.dot(XMatrix, betaVector);
+      console.log("yVector:");
+      console.log(predictedYVector);
+      return predictedYVector;
+  }
+
+  let _startingConstantAndSlope = {
     randomApproach: (_) => {
       console.log("Using random approach");
+      return nj.random([2, 1]);
     },
     roughEstimateApproach: (XYpairs) => {
       console.log("Using rough estimation approach");
@@ -30,25 +38,16 @@ const GradientDescent = function(){
       let minX = Math.min(...X);
       console.log("Min X: " + minX);
       let estimatedConstant = XYpairs.filter(item => Object.keys(item)[0] == minX)[0];
-      //console.log(estimatedConstant);
       estimatedConstant = Object.values(estimatedConstant)[0];
       let estimatedYIntercept = (medianY - estimatedConstant) / medianX;
       console.log("Estimated constant: " + estimatedConstant + "estimated YIntercept" + estimatedYIntercept);
-
-      let betaVector = nj.array([
+      const betaVector = nj.array([
         [estimatedConstant],
         [estimatedYIntercept]
       ]);
       console.log("Beta vector: ");
       console.log(betaVector);
-      let yVector = nj.dot(XMatrix, betaVector);
-      console.log("yVector");
-      console.log(yVector);
-
-      return {
-        c: estimatedConstant,
-        m: estimatedYIntercept
-      };
+      return betaVector;
     }
   }
 
@@ -57,18 +56,30 @@ const GradientDescent = function(){
     return predictedYVector;
   }
 
-  _calculateCostFunction = () => {
-
+  _calculateCostFunction = (numberOfObservation, actualY, predictedYVector) => {
+    return (1/2*numberOfObservation)*((actualY.subtract(predictedYVector)).pow(2).sum());
   }
 
-  const runGradientDescent = (XYPair, learning_rate, numberOfIteration, startingApproach) => {
-    let X = _getAllXFromXYpairs(XYPair);
+  const runGradientDescent = (XYPairs, learningRate, numberOfIteration, startingApproach) => {
+    let X = _getAllXFromXYpairs(XYPairs), Y = _getAllYFromXYpairs(XYPairs);
     let numberOfObservation = X.length;
     console.log(numberOfObservation);
     let onesVector = nj.ones([numberOfObservation, 1]);
     let XVector = nj.array(X).reshape(numberOfObservation, 1);
     let XMatrix = nj.concatenate(onesVector, XVector);
-    console.log(XMatrix);
+    let betaVector = _startingConstantAndSlope[startingApproach](XYPairs);
+    const allCosts = [], allBetas = [];
+    let predictedYVector;
+    for (let i = 0; i < numberOfIteration; i++) {
+      predictedYVector = _predict(XMatrix, betaVector);
+      betaVector -= X.T.dot(predictedYVector.subtract(Y)).multiply(learningRate/numberOfObservation); 
+      allBetas.push(betaVector);
+      let cost = _calculateCostFunction(numberOfObservation, Y, predictedYVector);
+      allCosts.push(cost);
+    }
+    console.log("Optimal Beta0: " + betaVector[0][0]);
+    console.log("Optimal Beta1: " + betaVector[0][1]);
+    return {allBetas: allBetas, allCosts: allCosts, optimalBeta: betaVector};
   }
 
   const createAndGetDummyData = (numberOfObservation, upperRange) => {
