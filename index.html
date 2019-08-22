@@ -82,12 +82,12 @@
             <h5 >Choose starting beta predictor method</h5>
             <div class="form-check">
                 <label class="form-check-label">
-                  <input type="radio" class="form-check-input" checked name="optradio">Random Method
+                  <input type="radio" value="randomApproach" class="form-check-input" checked name="optradio">Random Method
                 </label>
               </div>
               <div class="form-check">
                 <label class="form-check-label">
-                  <input type="radio" class="form-check-input" name="optradio">Rough estimation method
+                  <input type="radio" value="roughEstimateApproach" class="form-check-input" name="optradio">Rough estimation method
                 </label>
               </div>
         </div>
@@ -95,14 +95,14 @@
             <h4>Learning rate</h4>
             <div class="form-group">
                 <label for="usr">Choose Learning rate:</label>
-                <input value="0.2" type="number" min="0.01" max="10" step="0.01"></input>
+                <input id="lr" value="0.2" type="number" min="0.01" max="10" step="0.01"></input>
             </div>
         </div>
         <div class="col-md-4">
             <h4>Number of Iteration</h4>
             <div class="form-group">
                 <label for="usr">Choose Number of Interation:</label>
-                <input value="100" type="number" min="10" max="100000" step="10"></input>
+                <input id="noi" value="100" type="number" min="10" max="100000" step="10"></input>
             </div>
         </div>
       </div>
@@ -124,8 +124,13 @@
 
       $("#GD").click(function (e) { 
         e.preventDefault();
-        ipcRenderer.send("run-GD-algo", {});
+        hyperParameters = {};
+        hyperParameters.numberOfIteration = $('#noi').val();
+        hyperParameters.learningRate =  $('#lr').val();
+        hyperParameters.selectedMethod = $("input[name='optradio']:checked").val();
+        ipcRenderer.send("run-GD-algo", hyperParameters);
       });
+      
       ipcRenderer.on("end-GD-algo", (event, res) => {
         console.log(res);
         if(res.success){

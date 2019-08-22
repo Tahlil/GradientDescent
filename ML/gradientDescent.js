@@ -61,7 +61,7 @@ const GradientDescent = function(){
 
   }
 
-  const runGradientDescent = (XYPair, learning_rate) => {
+  const runGradientDescent = (XYPair, learning_rate, numberOfIteration, startingApproach) => {
     let X = _getAllXFromXYpairs(XYPair);
     let numberOfObservation = X.length;
     console.log(numberOfObservation);

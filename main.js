@@ -64,20 +64,23 @@ class DesktopApp {
           let value = point[key];
           return {regressor: parseInt(key), regressand: value};
         });
-        //console.log(arg) // prints "ping"
         event.sender.send('asynchronous-reply', data);
       })
     }
 
     setUpGDAlgoListener(){
-      ipcMain.on('run-GD-algo', (event, arg) => {
+      ipcMain.on('run-GD-algo', (event, hyperParameters) => {
         endResult = {};
         if(this.currentData === null){
           endResult.success = false;
         }
         else{
           endResult.success = true;
-          endResult.result = gradientDescent.runGradientDescent(this.currentData);
+          let learningRate = hyperParameters.learningRate,
+          numberOfIteration = hyperParameters.numberOfIteration,
+          startingMethod = hyperParameters.selectedMethod;
+          endResult.result = gradientDescent.runGradientDescent(this.currentData, learningRate, numberOfIteration, startingMethod);
+          endResult.summary = "Hyperparameters Used: " + "\nLearning Rate: " + learningRate + "\nNumber of Iteration: " + numberOfIteration + "\nStrating bete prediction method: " + startingMethod;
         }
         // let allInfos = gradientDescent.createAndGetDummyData(10, 1000);
         // let data = allInfos.data;
