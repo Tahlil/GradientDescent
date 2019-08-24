@@ -55,14 +55,14 @@ class DesktopApp {
     }
 
     setUpDataListener(){
-      this.ipcMain.on('get-data', (event, arg) => {
-        let allInfos = gradientDescent.createAndGetDummyData(1000, 1000);
+      this.ipcMain.on('get-data', (event, numberOfData) => {
+        let allInfos = gradientDescent.createAndGetDummyData(numberOfData);
         let data = allInfos.data;
         this.currentData = data;
         data = data.map((point)=> {
           let key = Object.keys(point)[0];
           let value = point[key];
-          return {regressor: parseInt(key), regressand: value};
+          return {regressor: parseFloat(key), regressand: value};
         });
         event.sender.send('asynchronous-reply', data);
       })
@@ -70,7 +70,7 @@ class DesktopApp {
 
     setUpGDAlgoListener(){
       ipcMain.on('run-GD-algo', (event, hyperParameters) => {
-        endResult = {};
+        let endResult = {};
         if(this.currentData === null){
           endResult.success = false;
         }

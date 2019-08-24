@@ -47,12 +47,12 @@
       </div>
     </nav>
     
-<br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br>
 <div class="row pt-5">
     <div class="col-md-12">
         <div class="form-group">
             <label for="usr">Choose number of data to be generated:</label>
-            <input value="100" type="number" min="100" max="10000" step="100"></input>
+            <input id="nod" value="100" type="number" min="100" max="10000" step="100"></input>
         </div>
     </div>
   </div>
@@ -95,14 +95,14 @@
             <h4>Learning rate</h4>
             <div class="form-group">
                 <label for="usr">Choose Learning rate:</label>
-                <input id="lr" value="0.2" type="number" min="0.01" max="10" step="0.01"></input>
+                <input id="lr" value="0.01" type="number" min="0.0001" max="10" step="0.01"></input>
             </div>
         </div>
         <div class="col-md-4">
             <h4>Number of Iteration</h4>
             <div class="form-group">
                 <label for="usr">Choose Number of Interation:</label>
-                <input id="noi" value="100" type="number" min="10" max="100000" step="10"></input>
+                <input id="noi" value="1000" type="number" min="10" max="100000" step="10"></input>
             </div>
         </div>
       </div>
@@ -115,7 +115,8 @@
       console.log(d3);
       $("#newData").click(function (e) { 
         e.preventDefault();
-        ipcRenderer.send("get-data", {});
+        let numberOfData = $('#nod').val();
+        ipcRenderer.send("get-data", numberOfData);
       });
       ipcRenderer.on("asynchronous-reply", (event, data) => {
         console.log(data);

@@ -1,4 +1,5 @@
 function plotData(data) { 
+  console.log(data);
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
   width = 460 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
@@ -23,7 +24,7 @@ function plotData(data) {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, 10000])
+    .domain([0, 100])
     .range([ height, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
@@ -40,7 +41,7 @@ function plotData(data) {
       .style("fill", "#69b3a2")
 
   // new X axis
-  x.domain([0, 1000])
+  x.domain([0, 10])
   svg.select(".myXaxis")
     .transition()
     .duration(2000)

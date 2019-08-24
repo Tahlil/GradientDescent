@@ -2,22 +2,22 @@ const nj = require('numjs');
 
 const GradientDescent = function(){
   function _getRandomInARange(min, max) {
-    return Math.ceil(Math.random() * (max - min) + min);
+    return Math.random() * (max - min) + min;
   }
 
   function _getAllXFromXYpairs(XYpairs){
-    return XYpairs.map(point => parseInt(Object.keys(point)[0]));
+    return XYpairs.map(point => parseFloat(Object.keys(point)[0]));
   }
 
   function _getAllYFromXYpairs(XYpairs){
-    XYpairs.map(point => Object.values(point)[0])
+    return XYpairs.map(point => Object.values(point)[0])
   }
 
   function _predict(XMatrix, betaVector) {
     let predictedYVector = nj.dot(XMatrix, betaVector);
-      console.log("yVector:");
-      console.log(predictedYVector);
-      return predictedYVector;
+    // console.log("yVector:");
+    // console.log(predictedYVector);
+    return predictedYVector;
   }
 
   let _startingConstantAndSlope = {
@@ -38,7 +38,11 @@ const GradientDescent = function(){
       let minX = Math.min(...X);
       console.log("Min X: " + minX);
       let estimatedConstant = XYpairs.filter(item => Object.keys(item)[0] == minX)[0];
+      console.log(estimatedConstant);
+      
       estimatedConstant = Object.values(estimatedConstant)[0];
+      console.log(estimatedConstant);
+      
       let estimatedYIntercept = (medianY - estimatedConstant) / medianX;
       console.log("Estimated constant: " + estimatedConstant + "estimated YIntercept" + estimatedYIntercept);
       const betaVector = nj.array([
@@ -51,16 +55,13 @@ const GradientDescent = function(){
     }
   }
 
-  function _predict(XMatrix, betaVector){
-    const predictedYVector =  nj.dot(XMatrix, betaVector);
-    return predictedYVector;
-  }
-
   _calculateCostFunction = (numberOfObservation, actualY, predictedYVector) => {
     return (1/2*numberOfObservation)*((actualY.subtract(predictedYVector)).pow(2).sum());
   }
 
   const runGradientDescent = (XYPairs, learningRate, numberOfIteration, startingApproach) => {
+    console.log("Learning Rate : " + learningRate );
+    console.log("Number Of Iteration: " + numberOfIteration);
     let X = _getAllXFromXYpairs(XYPairs), Y = _getAllYFromXYpairs(XYPairs);
     let numberOfObservation = X.length;
     console.log(numberOfObservation);
@@ -70,36 +71,44 @@ const GradientDescent = function(){
     let betaVector = _startingConstantAndSlope[startingApproach](XYPairs);
     const allCosts = [], allBetas = [];
     let predictedYVector;
+    Y = nj.array([Y]).T;
+
+    let gradientConstant = nj.array([[learningRate/numberOfObservation], [learningRate/numberOfObservation]]);
     for (let i = 0; i < numberOfIteration; i++) {
       predictedYVector = _predict(XMatrix, betaVector);
-      betaVector -= X.T.dot(predictedYVector.subtract(Y)).multiply(learningRate/numberOfObservation); 
+      let diff = predictedYVector.subtract(Y);
+      let gd = nj.dot(XMatrix.T, diff);
+      let descent = gd.multiply(gradientConstant);
+      betaVector.subtract(descent, false);
       allBetas.push(betaVector);
       let cost = _calculateCostFunction(numberOfObservation, Y, predictedYVector);
       allCosts.push(cost);
     }
-    console.log("Optimal Beta0: " + betaVector[0][0]);
-    console.log("Optimal Beta1: " + betaVector[0][1]);
+    console.log("Optimal Betas:");
+    console.log(allBetas[allBetas.length-1]);
     return {allBetas: allBetas, allCosts: allCosts, optimalBeta: betaVector};
   }
 
-  const createAndGetDummyData = (numberOfObservation, upperRange) => {
+  const createAndGetDummyData = ( numberOfObservation) => {
     let data = [];
-    let yInterceptConstant = _getRandomInARange(100, 200),
-      slope = _getRandomInARange(1, 10);
+    let yInterceptConstant = _getRandomInARange(1, 10),
+      slope = _getRandomInARange(1, 9);
     console.log("Actual Beta0: " + yInterceptConstant + " Actual beta1: " + slope);
-
+    let noiseUpperRange = yInterceptConstant/2;
     for (let index = 0; index < numberOfObservation; index++) {
       let noise;
-      if (_getRandomInARange(0, 100) > 19) {
-        noise = _getRandomInARange((-1)*upperRange, upperRange);
+      if (_getRandomInARange(0, 100) > 15) {
+        noise = _getRandomInARange((-1)*noiseUpperRange, noiseUpperRange);
       } else {
          // outlier
-        if (_getRandomInARange(0, 100) > 50) noise = _getRandomInARange(_getRandomInARange(-3000, -1500), (-1)*upperRange);
-        else noise = _getRandomInARange(upperRange, _getRandomInARange(1500, 3500));
-        
+         let outlierUpperRange = _getRandomInARange(noiseUpperRange * 2, noiseUpperRange * 4);
+        if (_getRandomInARange(0, 100) > 50) noise = _getRandomInARange((-1)*outlierUpperRange, (-1)*noiseUpperRange);
+        else noise = _getRandomInARange(noiseUpperRange, outlierUpperRange);
       }
-      let x = _getRandomInARange(100, upperRange)*2;
-      let y = yInterceptConstant + x * slope + noise + upperRange;
+      let x = _getRandomInARange(0, 9999)/1000;
+      let y = yInterceptConstant + x * slope + noise;
+      //console.log("X and Y's:");
+      //console.log(x +' ' +y);
       data.push({
         [x]: y
       });
