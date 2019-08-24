@@ -64,7 +64,7 @@ class DesktopApp {
           let value = point[key];
           return {regressor: parseFloat(key), regressand: value};
         });
-        event.sender.send('asynchronous-reply', data);
+        event.sender.send('asynchronous-reply', {data: data, b0: allInfos.beta0, b1: allInfos.beta1});
       })
     }
 

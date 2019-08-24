@@ -1,5 +1,11 @@
-function plotData(data) { 
-  console.log(data);
+function plotData(allInfo) {
+  let data = allInfo.data, b0 = allInfo.b0, b1 = allInfo.b1, fittingData= []; 
+  //console.log(data);
+  console.log("b0: " + b0 + "b1: " + b1);
+  for (var i = 0.0; i < 10; i+=0.01) {
+    var point = {x: i, y: (b0 + b1*i)};
+    fittingData.push(point); 
+  }
   var margin = {top: 10, right: 30, bottom: 30, left: 60},
   width = 460 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
@@ -54,5 +60,15 @@ function plotData(data) {
     .duration(2000)
     .attr("cx", function (d) { return x(d.regressor); } )
     .attr("cy", function (d) { return y(d.regressand); } )
-  
+ 
+    svg.append('g')
+    .selectAll("dot")
+    .data(fittingData)
+    .enter()
+    .append("circle")
+      .attr("cx", function (d) { return x(d.x); } )
+      .attr("cy", function (d) { return y(d.y); } )
+      .attr("r", 1.5)
+      .style("fill", "#ff474c")
+
 }

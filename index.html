@@ -119,7 +119,6 @@
         ipcRenderer.send("get-data", numberOfData);
       });
       ipcRenderer.on("asynchronous-reply", (event, data) => {
-        console.log(data);
         plotData(data);
       });
 
